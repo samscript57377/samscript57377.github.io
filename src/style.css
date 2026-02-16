@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=SN+Pro:ital,wght@0,200..900;1,200..900&display=swap');
+
+:root {
+  --c1: #67E723;
+  --c2: #23E72C;
+  --c3: #23E77B;
+  --c4: #23E7C9;
+  --c5: #23B6E7;
+  --gradient-primary: linear-gradient(135deg, var(--c1) 0%, var(--c3) 50%, var(--c5) 100%);
+  --gradient-secondary: linear-gradient(45deg, var(--c2) 0%, var(--c4) 100%);
+  --gradient-tertiary: linear-gradient(180deg, var(--c5) 0%, var(--c1) 100%);
+  --text-primary: #1a1a1a;
+  --text-secondary: #4a4a4a;
+}
+
+* {
+    transition: all 0.3s ease-in-out;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background: var(--gradient-primary);
+    font-family: "SN Pro", sans-serif;
+}
+
+#container {
+    margin: 0;
+    display: grid;
+    width: calc(100% - 20px);
+    height: calc(100% - 20px);
+    grid-template-columns: repeat(100, 1fr);
+    grid-template-rows: repeat(100, 1fr);
+    gap: 15px;
+    background: transparent;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.section {
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+    backdrop-filter: blur(4px);
+    overflow: hidden;
+    position: relative;
+}
+
+.section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--c1), transparent);
+    opacity: 0.5;
+}
+
+.section:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.25);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+#section1 {
+    grid-column: 12 / 50;
+    grid-row: 10 / 40;
+}
+
+#section2 {
+    grid-column: 68 / 90;
+    grid-row: 15 / 48;
+}
+
+#section3 {
+    grid-column: 35 / 58;
+    grid-row: 35 / 60;
+}
+
+.container {
+    height: calc(100% - 40px);
+    width: calc(100% - 40px);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+h1,
+h2 {
+    margin: 0 0 15px 0;
+    font-family: "SN Pro", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    color: var(--text-primary);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+h1 {
+    font-size: 65px;
+    line-height: 1.1;
+}
+
+h2 {
+    font-size: 45px;
+    line-height: 1.2;
+}
+
+p {
+    color: var(--text-secondary);
+    font-size: 16px;
+    line-height: 1.6;
+    margin: 10px 0;
+    font-weight: 400;
+}
+
+.message {
+    background: linear-gradient(135deg, rgba(103, 231, 35, 0.1), rgba(35, 231, 201, 0.1));
+    border-left: 4px solid var(--c1);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.message p {
+    color: var(--text-primary);
+    font-size: 14px;
+    margin: 0;
+    font-weight: 500;
+}
