@@ -1,4 +1,3 @@
 # samscript57377.github.io
-
-This is the repostory where i will store my portofolio and recent projects.
-Pull and push requests will be ignored. Issues will be read, but might not be replied to.
+> [!NOTE]
+> This is the repository where i store my portofolio. please [click here](https://samscript57377.github.io) to continue to the github site.
