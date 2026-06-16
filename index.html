@@ -2,18 +2,326 @@
 <html lang="en">
 
 <head>
-    <title>SamScript</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>SAMSCRIPT // PORTFOLIO</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="src/style.css">
 </head>
 
 <body>
-    <div id="container">
-        <div id="frame">
-            <h1>In construction</h1>
-            <hr>
-            <p>I'm remaking my whole portofolio to be cool and gamified! Check back later.</p>
+    <canvas id="matrix-cv"></canvas>
+    <canvas id="bg-cv"></canvas>
+    <div class="grid"></div>
+    <div class="scan"></div>
+
+    <div id="boot">
+        <canvas id="boot-holo-cv" width="110" height="110"></canvas>
+        <div id="boot-logo">SAMSCRIPT<span>// PORTFOLIO SYSTEM v5.0</span></div>
+        <div id="boot-bar-wrap">
+            <div id="boot-label">INITIALISING...</div>
+            <div id="boot-track">
+                <div id="boot-fill"></div>
+            </div>
+        </div>
+        <div id="boot-log">&nbsp;</div>
+    </div>
+
+    <div id="app">
+        <div id="topbar">
+            <div id="logo">SAMSCRIPT<span> //SYS</span></div>
+            <div class="xp-wrap">
+                <div class="xp-label"><span>XP</span><span id="xp-txt">0 / 200</span></div>
+                <div class="xp-track">
+                    <div class="xp-fill" id="xp-fill"></div>
+                </div>
+            </div>
+            <div id="rank-badge">ROOKIE</div>
+            <div id="streak-badge">&#128293; 0 DAY STREAK</div>
+            <div id="combo-display">COMBO x0</div>
+            <div class="top-status">
+                <div class="status-dot blink"></div>ONLINE
+            </div>
+        </div>
+        <nav id="nav">
+            <button class="nb on" data-s="home">HOME</button>
+            <button class="nb" data-s="projects">PROJECTS<span class="badge" id="pnotif">3</span></button>
+            <button class="nb" data-s="clips">CLIPS</button>
+            <button class="nb" data-s="achievements">ACHIEVEMENTS<span class="badge" id="anotif">0</span></button>
+            <button class="nb" data-s="contact">CONTACT</button>
+        </nav>
+        <div id="content">
+
+            <div id="home" class="sec on">
+                <div class="panel" style="position:relative">
+                    <div class="corner ctlr"></div>
+                    <div class="corner ctrr"></div>
+                    <div class="corner cblr"></div>
+                    <div class="corner cbrr"></div>
+                    <div class="plabel">// OPERATOR PROFILE</div>
+                    <div class="hero-row">
+                        <div class="avatar-wrap">
+                            <div class="avatar" id="avatar-btn">
+                                <div class="avatar-txt">SS</div>
+                            </div>
+                            <div class="aring aring1"></div>
+                            <div class="aring aring2"></div>
+                            <div class="aring aring3"></div>
+                            <div class="hero-lvl" id="avatar-lvl">LVL 1</div>
+                        </div>
+                        <div class="hero-info">
+                            <div class="hero-name" id="hero-name-el"></div>
+                            <div class="hero-sub">DEVELOPER &nbsp;/&nbsp; CREATOR &nbsp;/&nbsp; STREAMER</div>
+                            <div class="hero-bio">Operator on the digital frontier. I architect code, ship projects and
+                                stream the process live. Fuelled by curiosity and caffeine — available for collabs,
+                                missions and interesting problems.</div>
+                        </div>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="sbox">
+                            <div class="sval" id="sv-proj">3</div>
+                            <div class="skey">PROJECTS</div>
+                        </div>
+                        <div class="sbox">
+                            <div class="sval" id="sv-ach">0</div>
+                            <div class="skey">ACHIEVEMENTS</div>
+                        </div>
+                        <div class="sbox">
+                            <div class="sval" id="sv-rank">LVL 1</div>
+                            <div class="skey">RANK</div>
+                        </div>
+                        <div class="sbox">
+                            <div class="sval" id="sv-xp">0</div>
+                            <div class="skey">TOTAL XP</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="holo-row" id="holo-row">
+                    <div class="holo-card"><canvas class="holo-canvas" id="hcv0" width="120" height="90"></canvas>
+                        <div class="holo-label">CUBE MATRIX</div>
+                        <div class="holo-sub">Core Systems</div>
+                    </div>
+                    <div class="holo-card"><canvas class="holo-canvas" id="hcv1" width="120" height="90"></canvas>
+                        <div class="holo-label">TETRA GRID</div>
+                        <div class="holo-sub">Architecture</div>
+                    </div>
+                    <div class="holo-card"><canvas class="holo-canvas" id="hcv2" width="120" height="90"></canvas>
+                        <div class="holo-label">SPHERE NET</div>
+                        <div class="holo-sub">Connectivity</div>
+                    </div>
+                    <div class="holo-card"><canvas class="holo-canvas" id="hcv3" width="120" height="90"></canvas>
+                        <div class="holo-label">OCTA FRAME</div>
+                        <div class="holo-sub">Data Flow</div>
+                    </div>
+                </div>
+                <div class="panel">
+                    <div class="plabel">// SKILL MATRIX</div>
+                    <div class="skill-list" id="skill-list"></div>
+                </div>
+                <div class="panel">
+                    <div class="plabel">// SKILL TREE — click nodes to inspect</div>
+                    <canvas id="skill-tree-cv" height="200"></canvas>
+                </div>
+                <div class="panel">
+                    <div class="plabel">// SYSTEM TERMINAL — type commands below</div>
+                    <div id="feed"></div>
+                    <div class="term-input-row">
+                        <span class="term-prompt">samscript@sys:~$</span>
+                        <input class="term-input" id="term-input" autocomplete="off" spellcheck="false"
+                            placeholder="type a command...">
+                    </div>
+                </div>
+            </div>
+
+            <div id="projects" class="sec">
+                <div class="panel" style="padding:11px 15px;margin-bottom:11px">
+                    <div class="plabel" style="margin-bottom:4px">// CLASSIFIED FILES — click any card to access full
+                        intel</div>
+                    <div class="filter-bar" style="margin-bottom:0">
+                        <div class="filter-label">FILTER:</div>
+                        <div id="filter-btns" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+                    </div>
+                </div>
+                <div class="proj-grid" id="proj-grid"></div>
+            </div>
+
+            <div id="clips" class="sec">
+                <div class="panel">
+                    <div class="plabel">// MEDIA VAULT</div>
+                    <div style="font-size:10px;color:var(--w40);line-height:1.8">Click any feed to launch the viewer.
+                        Twitch stream plays live when online.</div>
+                </div>
+                <div class="clips-grid" id="clips-grid"></div>
+            </div>
+
+            <div id="achievements" class="sec">
+                <div class="panel" style="padding:13px 15px;margin-bottom:12px">
+                    <div class="plabel" style="margin-bottom:8px">// WHAT IS THIS?</div>
+                    <div style="font-size:11px;color:var(--w60);line-height:1.85">
+                        This page tracks small milestones as you explore the site &mdash; think of it as a fun changelog
+                        of how you've interacted with my portfolio, not a CV qualification. Browse a project, watch a
+                        clip, or find one of the easter eggs hidden around the site, and it gets logged here. None of it
+                        affects anything outside this page; it's just a playful way to reward curiosity. <span
+                            style="color:var(--c)">Some entries are intentionally hidden</span> until you unlock them
+                        &mdash; half the fun is finding out how.
+                    </div>
+                </div>
+                <div class="panel" style="padding:9px 15px">
+                    <div
+                        style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:7px">
+                        <div class="plabel" style="margin:0">// PROGRESS LOG</div>
+                        <div style="font-family:var(--hud);font-size:9px;color:var(--c);letter-spacing:2px"
+                            id="ach-counter">0 / 0 UNLOCKED</div>
+                    </div>
+                    <div style="height:3px;background:var(--w10);position:relative">
+                        <div id="ach-overall-bar"
+                            style="height:100%;background:linear-gradient(90deg,var(--c),var(--w));width:0%;transition:width .8s;box-shadow:0 0 6px var(--c)">
+                        </div>
+                    </div>
+                </div>
+                <div class="ach-grid" id="ach-grid"></div>
+                <div class="panel" style="margin-top:12px">
+                    <div class="plabel">// HOW TO UNLOCK MORE</div>
+                    <div
+                        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;margin-top:6px">
+                        <div style="font-size:10px;color:var(--w40);line-height:1.7"><span
+                                style="color:var(--c)">&#x2022;</span> Open a project card to read the full brief</div>
+                        <div style="font-size:10px;color:var(--w40);line-height:1.7"><span
+                                style="color:var(--c)">&#x2022;</span> Watch one of the clips in the Media Vault</div>
+                        <div style="font-size:10px;color:var(--w40);line-height:1.7"><span
+                                style="color:var(--c)">&#x2022;</span> Click around the skill tree on the Home page
+                        </div>
+                        <div style="font-size:10px;color:var(--w40);line-height:1.7"><span
+                                style="color:var(--c)">&#x2022;</span> Type <span style="color:var(--c)">help</span>
+                            into the system terminal</div>
+                        <div style="font-size:10px;color:var(--w40);line-height:1.7"><span
+                                style="color:var(--c)">&#x2022;</span> Visit every page at least once</div>
+                        <div style="font-size:10px;color:var(--w40);line-height:1.7"><span
+                                style="color:var(--c)">&#x2022;</span> Some things just reward curiosity &mdash; click
+                            around</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="contact" class="sec">
+                <div class="panel">
+                    <div class="plabel">// COMMS CHANNELS</div>
+                    <div style="font-size:11px;color:var(--w40);line-height:1.8">Select a channel below to open a
+                        connection. I'm most active on Discord and Twitch &mdash; feel free to drop in, say hi, or open
+                        an issue on GitHub if you've found a bug in one of my projects.</div>
+                </div>
+                <div class="soc-grid" id="soc-grid"></div>
+
+                <div class="panel" style="margin-top:12px">
+                    <div class="plabel">// AVAILABILITY</div>
+                    <div
+                        style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-top:4px">
+                        <div class="sbox" style="text-align:left;padding:11px">
+                            <div class="skey" style="margin-bottom:5px">STATUS</div>
+                            <div style="font-size:11px;color:var(--w);display:flex;align-items:center;gap:6px"><span
+                                    class="status-dot blink" style="display:inline-block"></span>OPEN TO COLLABS</div>
+                        </div>
+                        <div class="sbox" style="text-align:left;padding:11px">
+                            <div class="skey" style="margin-bottom:5px">RESPONSE TIME</div>
+                            <div style="font-size:11px;color:var(--w)">Usually within 24&ndash;48h</div>
+                        </div>
+                        <div class="sbox" style="text-align:left;padding:11px">
+                            <div class="skey" style="margin-bottom:5px">BEST FOR</div>
+                            <div style="font-size:11px;color:var(--w)">Collabs, freelance, questions</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel" style="margin-top:12px">
+                    <div class="plabel">// WHAT I'M INTO</div>
+                    <div style="font-size:11px;color:var(--w40);line-height:1.85;margin-bottom:12px">If you want to
+                        reach out about something specific, here's where I'm most likely to be a good fit.</div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+                        <div style="border:1px solid var(--border);background:var(--w05);padding:12px">
+                            <div
+                                style="font-family:var(--hud);font-size:9px;color:var(--c);letter-spacing:2px;margin-bottom:6px">
+                                FREELANCE WORK</div>
+                            <div style="font-size:10px;color:var(--w40);line-height:1.6">Web apps, dashboards, CLI
+                                tooling and backend APIs.</div>
+                        </div>
+                        <div style="border:1px solid var(--border);background:var(--w05);padding:12px">
+                            <div
+                                style="font-family:var(--hud);font-size:9px;color:var(--c);letter-spacing:2px;margin-bottom:6px">
+                                COLLABORATIONS</div>
+                            <div style="font-size:10px;color:var(--w40);line-height:1.6">Open-source projects,
+                                hackathons, joint streams.</div>
+                        </div>
+                        <div style="border:1px solid var(--border);background:var(--w05);padding:12px">
+                            <div
+                                style="font-family:var(--hud);font-size:9px;color:var(--c);letter-spacing:2px;margin-bottom:6px">
+                                JUST SAYING HI</div>
+                            <div style="font-size:10px;color:var(--w40);line-height:1.6">Found a bug, liked a project,
+                                or just want to chat &mdash; always welcome.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+
+    <div id="proj-modal">
+        <div class="pmod-inner" id="pmod-inner">
+            <div class="pmod-header">
+                <div>
+                    <div class="pmod-title" id="pmod-title">PROJECT</div>
+                    <div class="pmod-tag" id="pmod-tag">TAG</div>
+                </div>
+                <button class="pmod-close" id="pmod-close">&#x2715;</button>
+            </div>
+            <div class="pmod-body" id="pmod-body"></div>
+        </div>
+    </div>
+
+    <div id="hack-modal">
+        <div class="hack-inner">
+            <div class="hack-head">
+                <div class="hack-head-title">// SECURE TERMINAL &mdash; DECRYPT CLASSIFIED</div>
+                <button onclick="closeHack()"
+                    style="background:none;border:none;color:var(--w40);font-size:15px;cursor:pointer">&#x2715;</button>
+            </div>
+            <div class="hack-body">
+                <div style="font-size:9px;color:var(--w40);margin-bottom:10px;letter-spacing:1px">Solve the challenges
+                    to unlock the classified project. Type <span style="color:#44FF88">help</span> to begin.</div>
+                <div class="hack-dots" id="hack-dots"></div>
+                <div class="hack-terminal">
+                    <div class="hack-out" id="hack-out"></div>
+                    <div class="hack-input-row">
+                        <span class="hack-prompt">root@samscript:~$</span>
+                        <input class="hack-input" id="hack-in" autocomplete="off" spellcheck="false"
+                            placeholder="type command...">
+                    </div>
+                </div>
+                <div class="hack-unlock" id="hack-banner">&#x2705; CLASSIFIED PROJECT DECRYPTED &mdash; MISSION SUCCESS
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="clip-modal">
+        <div class="cmod-inner" style="position:relative">
+            <div class="corner ctlr"></div>
+            <div class="corner ctrr"></div>
+            <div class="corner cblr"></div>
+            <div class="corner cbrr"></div>
+            <button class="cmod-close" id="cmod-close">&#x2715;</button>
+            <div class="cmod-title" id="cmod-title">CLIP VIEWER</div>
+            <div id="cmod-body"></div>
+        </div>
+    </div>
+
+    <div id="combo-bar">COMBO x<span id="combo-val">0</span></div>
+    <div id="toasts"></div>
+
+    <script src="src/script.js"></script>
 </body>
 
 </html>
