@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SAMSCRIPT // ADMIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --c:#00FFFF;--w:#FFFFFF;
+  --c08:rgba(0,255,255,.08);--c15:rgba(0,255,255,.15);--c30:rgba(0,255,255,.30);
+  --w05:rgba(255,255,255,.05);--w10:rgba(255,255,255,.10);--w20:rgba(255,255,255,.20);--w40:rgba(255,255,255,.40);--w60:rgba(255,255,255,.60);
+  --border:rgba(255,255,255,.12);--borderc:rgba(0,255,255,.25);
+  --bg:#030c11;--bg2:#060f17;
+  --hud:'Orbitron',monospace;--mono:'Share Tech Mono',monospace;
+  --err:#FF4444;--ok:#44FF88;
+}
+*{scrollbar-width:thin;scrollbar-color:var(--c15) transparent}
+html,body{min-height:100%}
+body{background:var(--bg);color:var(--w);font-family:var(--mono);font-size:13px;background-image:linear-gradient(rgba(255,255,255,.015) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.015) 1px,transparent 1px);background-size:48px 48px}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.login-box{border:1px solid var(--borderc);background:rgba(255,255,255,.02);padding:36px 32px;width:min(420px,100%);text-align:center;position:relative}
+.login-box::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c),transparent)}
+.corner{position:absolute;width:10px;height:10px;border-color:var(--c);border-style:solid;opacity:.5}
+.ctlr{top:0;left:0;border-width:1px 0 0 1px}.ctrr{top:0;right:0;border-width:1px 1px 0 0}
+.cblr{bottom:0;left:0;border-width:0 0 1px 1px}.cbrr{bottom:0;right:0;border-width:0 1px 1px 0}
+.login-logo{font-family:var(--hud);font-size:22px;font-weight:900;letter-spacing:5px;color:var(--w);text-shadow:0 0 30px rgba(0,255,255,.3);margin-bottom:6px}
+.login-sub{font-size:10px;color:var(--c);letter-spacing:3px;opacity:.7;margin-bottom:28px}
+.btn-github{
+  font-family:var(--hud);font-size:11px;letter-spacing:2px;color:var(--bg);background:var(--c);
+  border:none;padding:13px 24px;cursor:pointer;display:inline-flex;align-items:center;gap:10px;
+  transition:all .2s;width:100%;justify-content:center
+}
+.btn-github:hover{background:var(--w);box-shadow:0 0 20px rgba(0,255,255,.3)}
+.login-note{font-size:9px;color:var(--w40);margin-top:18px;line-height:1.7}
+.login-error{font-size:10px;color:var(--err);margin-top:14px;border:1px solid rgba(255,68,68,.3);background:rgba(255,68,68,.06);padding:10px;display:none}
+.login-error.show{display:block}
+.cfg-warning{font-size:9px;color:#FFD700;margin-top:18px;border:1px solid rgba(255,215,0,.3);background:rgba(255,215,0,.06);padding:10px;text-align:left;line-height:1.6;display:none}
+.cfg-warning.show{display:block}
+
+/* ── APP SHELL ── */
+#admin-app{display:none}
+#admin-app.visible{display:block}
+#topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 22px;border-bottom:1px solid var(--border);background:rgba(3,12,17,.92);backdrop-filter:blur(8px);position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.tb-left{display:flex;align-items:center;gap:14px}
+#logo{font-family:var(--hud);font-size:14px;font-weight:900;letter-spacing:4px;color:var(--w)}
+#logo span{color:var(--c);opacity:.6;font-weight:400}
+.user-chip{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--w60)}
+.user-avatar{width:24px;height:24px;border-radius:50%;border:1px solid var(--c30)}
+.btn-logout{font-family:var(--hud);font-size:8px;letter-spacing:2px;color:var(--w40);background:none;border:1px solid var(--border);padding:6px 12px;cursor:pointer;transition:all .15s}
+.btn-logout:hover{color:var(--err);border-color:rgba(255,68,68,.3)}
+
+#tabs{display:flex;gap:5px;padding:10px 22px;border-bottom:1px solid var(--border);background:rgba(3,12,17,.6)}
+.tab-btn{font-family:var(--hud);font-size:10px;letter-spacing:2px;padding:8px 16px;border:1px solid var(--border);background:transparent;color:var(--w40);cursor:pointer;transition:all .15s;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.tab-btn:hover{color:var(--c);border-color:var(--c30)}
+.tab-btn.on{color:var(--c);border-color:var(--borderc);background:var(--c08)}
+
+#main{max-width:1000px;margin:0 auto;padding:24px 22px 60px}
+.tab-panel{display:none}.tab-panel.on{display:block}
+
+.panel{background:rgba(255,255,255,.02);border:1px solid var(--border);padding:18px 20px;margin-bottom:18px;position:relative}
+.panel::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--c30),transparent)}
+.panel-title{font-family:var(--hud);font-size:10px;letter-spacing:3px;color:var(--c);opacity:.85;margin-bottom:14px;text-transform:uppercase;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+
+.btn{font-family:var(--hud);font-size:9px;letter-spacing:2px;padding:8px 16px;border:1px solid var(--c30);color:var(--c);background:transparent;cursor:pointer;transition:all .15s;text-transform:uppercase}
+.btn:hover{background:var(--c);color:var(--bg)}
+.btn.btn-primary{background:var(--c);color:var(--bg)}
+.btn.btn-primary:hover{background:var(--w)}
+.btn.btn-danger{border-color:rgba(255,68,68,.4);color:var(--err)}
+.btn.btn-danger:hover{background:var(--err);color:var(--w)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-sm{padding:5px 11px;font-size:8px}
+
+/* ── FORM ── */
+.field{margin-bottom:14px}
+.field-label{font-size:9px;letter-spacing:2px;color:var(--w60);text-transform:uppercase;margin-bottom:6px;display:block}
+.field-label .req{color:var(--err)}
+.field-hint{font-size:9px;color:var(--w20);margin-top:5px;line-height:1.5}
+input[type=text],input[type=number],input[type=url],textarea,select{
+  width:100%;background:rgba(255,255,255,.03);border:1px solid var(--border);color:var(--w);
+  padding:10px 12px;font-family:var(--mono);font-size:12px;outline:none;transition:border-color .15s
+}
+input:focus,textarea:focus,select:focus{border-color:var(--c30)}
+textarea{resize:vertical;min-height:70px}
+select{cursor:pointer}
+.checkbox-row{display:flex;align-items:center;gap:8px}
+.checkbox-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--c)}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+@media (max-width:600px){.form-grid-2,.form-grid-3{grid-template-columns:1fr}}
+.tech-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tech-tag{font-size:10px;background:var(--c08);color:var(--c);padding:4px 9px;border:1px solid var(--c30);display:flex;align-items:center;gap:6px}
+.tech-tag button{background:none;border:none;color:var(--c);cursor:pointer;font-size:11px;line-height:1;padding:0}
+.timeline-row{display:grid;grid-template-columns:1fr 2fr auto;gap:8px;margin-bottom:8px;align-items:start}
+.timeline-row input{font-size:11px}
+
+/* ── GITHUB REPO PICKER ── */
+.repo-search-row{display:flex;gap:8px;margin-bottom:12px}
+.repo-search-row input{flex:1}
+.repo-list{max-height:280px;overflow-y:auto;border:1px solid var(--border)}
+.repo-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 13px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.repo-item:last-child{border-bottom:none}
+.repo-item:hover{background:var(--c08)}
+.repo-name{font-family:var(--hud);font-size:10px;color:var(--w);letter-spacing:.5px}
+.repo-meta{font-size:9px;color:var(--w40);margin-top:3px}
+.repo-lang{font-size:8px;color:var(--c);border:1px solid var(--c30);padding:2px 7px;letter-spacing:1px;white-space:nowrap}
+.repo-empty{padding:24px;text-align:center;color:var(--w20);font-size:10px;letter-spacing:1px}
+
+/* ── THUMBNAIL UPLOAD ── */
+.thumb-drop{border:1px dashed var(--border);background:rgba(255,255,255,.02);padding:20px;text-align:center;cursor:pointer;transition:border-color .15s;position:relative}
+.thumb-drop:hover{border-color:var(--c30)}
+.thumb-drop.has-image{padding:0;border-style:solid}
+.thumb-preview{width:100%;aspect-ratio:16/9;object-fit:cover;display:block}
+.thumb-drop-label{font-size:10px;color:var(--w40);letter-spacing:1px}
+.thumb-drop input[type=file]{display:none}
+.thumb-remove{position:absolute;top:6px;right:6px;background:rgba(0,0,0,.7);border:1px solid var(--err);color:var(--err);width:22px;height:22px;border-radius:50%;cursor:pointer;font-size:11px;display:flex;align-items:center;justify-content:center}
+
+/* ── ITEM LIST (existing projects/clips) ── */
+.item-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--border);background:var(--w05);margin-bottom:8px;flex-wrap:wrap}
+.item-thumb{width:50px;height:36px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+.item-info{flex:1;min-width:160px}
+.item-name{font-family:var(--hud);font-size:11px;color:var(--w);letter-spacing:.5px}
+.item-meta{font-size:9px;color:var(--w40);margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.item-tag{font-size:8px;color:var(--c);border:1px solid var(--c30);padding:1px 6px}
+.item-actions{display:flex;gap:6px;flex-shrink:0}
+.empty-list{padding:30px;text-align:center;color:var(--w20);font-size:10px;letter-spacing:2px}
+
+/* ── TOASTS ── */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:300;display:flex;flex-direction:column-reverse;gap:6px}
+.toast{background:var(--bg2);border:1px solid var(--border);border-left:2px solid var(--c);padding:10px 15px;font-size:10px;color:var(--w);letter-spacing:1px;font-family:var(--hud);max-width:300px;animation:tin .25s ease forwards;box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.toast.ok{border-left-color:var(--ok);color:var(--ok)}
+.toast.err{border-left-color:var(--err);color:var(--err)}
+@keyframes tin{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.tout{animation:tout .25s ease forwards}
+@keyframes tout{to{opacity:0;transform:translateX(20px)}}
+
+/* ── MODAL CONFIRM ── */
+#confirm-modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:200;backdrop-filter:blur(4px)}
+#confirm-modal.open{display:flex}
+.confirm-box{background:var(--bg);border:1px solid rgba(255,68,68,.4);padding:24px;width:min(380px,90vw);text-align:center}
+.confirm-title{font-family:var(--hud);font-size:11px;color:var(--err);letter-spacing:2px;margin-bottom:10px}
+.confirm-msg{font-size:11px;color:var(--w60);line-height:1.7;margin-bottom:20px}
+.confirm-actions{display:flex;gap:10px;justify-content:center}
+
+/* return button (matches admin styles) */
+.btn-return{transition:all .2s ease;display:inline-flex;align-items:center;gap:8px;padding:8px 12px;background:transparent;border:1px solid var(--border);color:var(--c);font-weight:600;font-size:12px;letter-spacing:1px;text-decoration:none}
+.btn-return:hover{background:rgba(255,255,255,0.02);border-color:var(--c)}
+.btn-return:active{transform:translateY(1px)}
+
+/* ── SPINNER ── */
+.spinner{width:14px;height:14px;border:2px solid var(--c15);border-top-color:var(--c);border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-row{text-align:center;padding:24px;color:var(--w40);font-size:10px;letter-spacing:2px}
+
+svg.gh-icon{width:18px;height:18px;stroke:currentColor;stroke-width:1.5;fill:none;flex-shrink:0}
+.section-divider{height:1px;background:var(--border);margin:18px 0}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="corner ctlr"></div><div class="corner ctrr"></div><div class="corner cblr"></div><div class="corner cbrr"></div>
+    <div class="login-logo">SAMSCRIPT</div>
+    <div class="login-sub">// ADMIN ACCESS REQUIRED</div>
+    <button class="btn-github" id="github-login-btn">
+      <svg class="gh-icon" viewBox="0 0 24 24"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+      SIGN IN WITH GITHUB
+    </button>
+    <div class="login-note"><a class="btn-return" href="/">← Back to Portfolio</a></div>
+    <div class="login-note">Only the account owner's GitHub username can access this panel. All visitors to the portfolio see live data managed from here.</div>
+    <div class="login-error" id="login-error"></div>
+    <div class="cfg-warning" id="cfg-warning">
+      <strong style="color:#FFD700">SUPABASE NOT CONFIGURED</strong><br>
+      Edit this file and set <code>SUPABASE_URL</code> and <code>SUPABASE_ANON_KEY</code> near the top of the script, and make sure GitHub OAuth is enabled in your Supabase project. See SETUP-GUIDE.md.
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="admin-app">
+  <div id="topbar">
+    <div class="tb-left">
+      <div id="logo">SAMSCRIPT<span> //ADMIN</span></div>
+    </div>
+    <div class="tb-left">
+      <div class="user-chip"><img class="user-avatar" id="user-avatar" src="" alt=""><span id="user-name">&nbsp;</span></div>
+      <button class="btn-logout" id="logout-btn">SIGN OUT</button>
+    </div>
+  </div>
+
+  <div id="tabs">
+    <button class="tab-btn on" data-tab="projects">PROJECTS</button>
+    <button class="tab-btn" data-tab="clips">CLIPS</button>
+  </div>
+
+  <div id="main">
+
+    <!-- PROJECTS TAB -->
+    <div id="tab-projects" class="tab-panel on">
+
+      <div class="panel">
+        <div class="panel-title">
+          <span>// IMPORT FROM GITHUB</span>
+          <span id="repo-rate-note" style="font-size:8px;color:var(--w20);text-transform:none;letter-spacing:0"></span>
+        </div>
+        <div class="repo-search-row">
+          <input type="text" id="repo-search" placeholder="Filter your repositories...">
+          <button class="btn" id="repo-refresh-btn">REFRESH</button>
+        </div>
+        <div class="repo-list" id="repo-list"><div class="loading-row"><span class="spinner"></span> Loading repositories...</div></div>
+        <div class="field-hint" style="margin-top:10px">Click a repository to prefill the form below with its name, description, language and link. Uses GitHub's public API (no token needed for public repos, ~60 requests/hour).</div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title" id="project-form-title">// NEW PROJECT</div>
+        <form id="project-form">
+          <input type="hidden" id="proj-id" value="">
+          <div class="form-grid-2">
+            <div class="field">
+              <label class="field-label">Project Name <span class="req">*</span></label>
+              <input type="text" id="proj-name" required placeholder="PROJECT ALPHA">
+            </div>
+            <div class="field">
+              <label class="field-label">Tag / Category <span class="req">*</span></label>
+              <input type="text" id="proj-tag" required placeholder="WEB APP">
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Short Description <span class="req">*</span></label>
+            <textarea id="proj-desc" required placeholder="One or two sentences shown on the card." style="min-height:50px"></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">Full Description</label>
+            <textarea id="proj-fulldesc" placeholder="Longer description shown in the detail view."></textarea>
+          </div>
+          <div class="field">
+            <label class="field-label">Tech Stack</label>
+            <input type="text" id="proj-tech-input" placeholder="Type a technology and press Enter">
+            <div class="tech-tags" id="proj-tech-tags"></div>
+          </div>
+          <div class="form-grid-3">
+            <div class="field">
+              <label class="field-label">Demo URL</label>
+              <input type="url" id="proj-demo" placeholder="https://...">
+            </div>
+            <div class="field">
+              <label class="field-label">GitHub URL</label>
+              <input type="url" id="proj-github" placeholder="https://github.com/...">
+            </div>
+            <div class="field">
+              <label class="field-label">Status</label>
+              <select id="proj-status">
+                <option>LIVE</option><option>BETA</option><option>WIP</option>
+                <option>ARCHIVED</option><option>CLASSIFIED</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-grid-3">
+            <div class="field"><label class="field-label">Duration</label><input type="text" id="proj-duration" placeholder="3 months"></div>
+            <div class="field"><label class="field-label">Commits</label><input type="text" id="proj-commits" placeholder="142"></div>
+            <div class="field"><label class="field-label">Lines of Code</label><input type="text" id="proj-lines" placeholder="8.4k"></div>
+          </div>
+          <div class="field">
+            <label class="field-label">Build Timeline</label>
+            <div id="proj-timeline-rows"></div>
+            <button type="button" class="btn btn-sm" id="add-timeline-row">+ ADD PHASE</button>
+          </div>
+          <div class="form-grid-2">
+            <div class="field">
+              <label class="field-label">XP Reward (shown to visitors)</label>
+              <input type="number" id="proj-xp" value="50" min="0">
+            </div>
+            <div class="field">
+              <label class="field-label">Visibility</label>
+              <div class="checkbox-row" style="margin-top:10px">
+                <input type="checkbox" id="proj-locked">
+                <label for="proj-locked" style="font-size:11px;color:var(--w60)">Locked / Classified (hidden until unlocked on the site)</label>
+              </div>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="submit" class="btn btn-primary" id="proj-submit-btn">SAVE PROJECT</button>
+            <button type="button" class="btn" id="proj-cancel-btn" style="display:none">CANCEL EDIT</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">// EXISTING PROJECTS</div>
+        <div id="projects-list"><div class="loading-row"><span class="spinner"></span> Loading...</div></div>
+      </div>
+    </div>
+
+    <!-- CLIPS TAB -->
+    <div id="tab-clips" class="tab-panel">
+      <div class="panel">
+        <div class="panel-title" id="clip-form-title">// NEW CLIP</div>
+        <form id="clip-form">
+          <input type="hidden" id="clip-id" value="">
+          <div class="form-grid-2">
+            <div class="field">
+              <label class="field-label">Title <span class="req">*</span></label>
+              <input type="text" id="clip-title" required placeholder="LIVE STREAM HIGHLIGHT">
+            </div>
+            <div class="field">
+              <label class="field-label">Category Label</label>
+              <input type="text" id="clip-cat" placeholder="TWITCH / YOUTUBE / DEMO">
+            </div>
+          </div>
+          <div class="field">
+            <label class="field-label">Source Type <span class="req">*</span></label>
+            <select id="clip-type">
+              <option value="youtube">YouTube Video</option>
+              <option value="twitch">Twitch Channel (live embed)</option>
+              <option value="url">Direct Video URL</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field-label" id="clip-src-label">YouTube Video ID <span class="req">*</span></label>
+            <input type="text" id="clip-src" required placeholder="dQw4w9WgXcQ">
+            <div class="field-hint" id="clip-src-hint">The part after "v=" in the YouTube URL.</div>
+          </div>
+          <div class="field">
+            <label class="field-label">Thumbnail Image</label>
+            <div class="thumb-drop" id="clip-thumb-drop">
+              <input type="file" id="clip-thumb-file" accept="image/*">
+              <div class="thumb-drop-label" id="clip-thumb-label">Click to upload a thumbnail (optional)</div>
+            </div>
+          </div>
+          <div class="section-divider"></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button type="submit" class="btn btn-primary" id="clip-submit-btn">SAVE CLIP</button>
+            <button type="button" class="btn" id="clip-cancel-btn" style="display:none">CANCEL EDIT</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <div class="panel-title">// EXISTING CLIPS</div>
+        <div id="clips-list"><div class="loading-row"><span class="spinner"></span> Loading...</div></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="confirm-modal">
+  <div class="confirm-box">
+    <div class="confirm-title">// CONFIRM DELETE</div>
+    <div class="confirm-msg" id="confirm-msg">Are you sure you want to delete this item? This cannot be undone.</div>
+    <div class="confirm-actions">
+      <button class="btn" id="confirm-cancel">CANCEL</button>
+      <button class="btn btn-danger" id="confirm-ok">DELETE</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ════════════════════════════════════════════════
+   CONFIG — edit these two values after Supabase setup
+══════════════════════════════════════════════════ */
+const SUPABASE_URL = 'https://ahcqzyflynyshwkigfvx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFoY3F6eWZseW55c2h3a2lnZnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTMxMTQsImV4cCI6MjA5NzI4OTExNH0.Vm2riF8isNVrXHltZ9GlpW0mkq9AqR38MwCLMbtXlqM';
+
+// Only these GitHub usernames may use this admin panel.
+const ALLOWED_GITHUB_USERNAMES = ['samscript57377'];
+
+/* ════════════════════════════════════════════════
+   SUPABASE CLIENT
+══════════════════════════════════════════════════ */
+let sb = null;
+let isConfigured = SUPABASE_URL.indexOf('YOUR_SUPABASE') === -1 && SUPABASE_ANON_KEY.indexOf('YOUR_SUPABASE') === -1;
+if(isConfigured && window.supabase){
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+if(!isConfigured){
+  document.getElementById('cfg-warning').classList.add('show');
+  document.getElementById('github-login-btn').disabled = true;
+}
+
+/* ════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════ */
+function toast(msg, type){
+  var w = document.getElementById('toasts');
+  var d = document.createElement('div');
+  d.className = 'toast' + (type ? ' ' + type : '');
+  d.textContent = msg;
+  w.appendChild(d);
+  setTimeout(function(){ d.classList.add('tout'); setTimeout(function(){ d.remove(); }, 250); }, 3500);
+}
+
+/* ════════════════════════════════════════════════
+   AUTH
+══════════════════════════════════════════════════ */
+let currentUser = null;
+let currentGithubUsername = null;
+
+document.getElementById('github-login-btn').addEventListener('click', async function(){
+  if(!sb) return;
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'github',
+    options: { redirectTo: window.location.href }
+  });
+  if(error){
+    showLoginError('Login failed: ' + error.message);
+  }
+});
+
+document.getElementById('logout-btn').addEventListener('click', async function(){
+  if(sb) await sb.auth.signOut();
+  location.reload();
+});
+
+function showLoginError(msg){
+  var el = document.getElementById('login-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+async function checkAuth(){
+  if(!sb){
+    return; // login screen with config warning already shown
+  }
+  const { data } = await sb.auth.getSession();
+  const session = data && data.session;
+  if(!session){
+    return; // show login screen
+  }
+  currentUser = session.user;
+  // GitHub username is in user_metadata.user_name (Supabase's GitHub provider convention)
+  currentGithubUsername = (currentUser.user_metadata && (currentUser.user_metadata.user_name || currentUser.user_metadata.preferred_username)) || '';
+
+  if(ALLOWED_GITHUB_USERNAMES.indexOf(currentGithubUsername) === -1){
+    showLoginError('Access denied. The GitHub account "' + (currentGithubUsername||'unknown') + '" is not authorized for this admin panel.');
+    await sb.auth.signOut();
+    return;
+  }
+
+  enterAdmin();
+}
+
+function enterAdmin(){
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('admin-app').classList.add('visible');
+  var avatar = (currentUser.user_metadata && currentUser.user_metadata.avatar_url) || '';
+  document.getElementById('user-avatar').src = avatar;
+  document.getElementById('user-name').textContent = currentGithubUsername;
+  loadGithubRepos();
+  loadProjects();
+  loadClips();
+}
+
+/* ════════════════════════════════════════════════
+   TABS
+══════════════════════════════════════════════════ */
+document.querySelectorAll('.tab-btn').forEach(function(btn){
+  btn.addEventListener('click', function(){
+    document.querySelectorAll('.tab-btn').forEach(function(b){ b.classList.remove('on'); });
+    document.querySelectorAll('.tab-panel').forEach(function(p){ p.classList.remove('on'); });
+    btn.classList.add('on');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('on');
+  });
+});
+
+/* ════════════════════════════════════════════════
+   GITHUB REPO IMPORT
+══════════════════════════════════════════════════ */
+let allRepos = [];
+
+async function loadGithubRepos(){
+  const list = document.getElementById('repo-list');
+  list.innerHTML = '<div class="loading-row"><span class="spinner"></span> Loading repositories...</div>';
+  try{
+    const username = currentGithubUsername;
+    const resp = await fetch('https://api.github.com/users/' + username + '/repos?per_page=100&sort=updated');
+    if(!resp.ok){
+      if(resp.status === 403){
+        list.innerHTML = '<div class="repo-empty">GitHub API rate limit reached. Try again later, or add a personal access token (see SETUP-GUIDE.md).</div>';
+      } else {
+        list.innerHTML = '<div class="repo-empty">Could not load repositories (HTTP ' + resp.status + ').</div>';
+      }
+      return;
+    }
+    const repos = await resp.json();
+    allRepos = repos;
+    renderRepoList(repos);
+    var remaining = resp.headers.get('x-ratelimit-remaining');
+    if(remaining !== null){
+      document.getElementById('repo-rate-note').textContent = remaining + ' API calls remaining this hour';
+    }
+  }catch(e){
+    list.innerHTML = '<div class="repo-empty">Network error loading repositories.</div>';
+  }
+}
+
+function renderRepoList(repos){
+  const list = document.getElementById('repo-list');
+  if(!repos.length){
+    list.innerHTML = '<div class="repo-empty">No repositories found.</div>';
+    return;
+  }
+  list.innerHTML = '';
+  repos.forEach(function(repo){
+    var item = document.createElement('div');
+    item.className = 'repo-item';
+    item.innerHTML = '<div><div class="repo-name">' + escHtml(repo.name) + '</div>'
+      + '<div class="repo-meta">' + escHtml(repo.description || 'No description') + ' &middot; &#9733; ' + repo.stargazers_count + '</div></div>'
+      + (repo.language ? '<span class="repo-lang">' + escHtml(repo.language) + '</span>' : '');
+    item.addEventListener('click', function(){ importRepo(repo); });
+    list.appendChild(item);
+  });
+}
+
+document.getElementById('repo-search').addEventListener('input', function(){
+  var q = this.value.toLowerCase();
+  renderRepoList(allRepos.filter(function(r){
+    return r.name.toLowerCase().indexOf(q) !== -1 || (r.description||'').toLowerCase().indexOf(q) !== -1;
+  }));
+});
+document.getElementById('repo-refresh-btn').addEventListener('click', loadGithubRepos);
+
+function importRepo(repo){
+  resetProjectForm();
+  document.getElementById('proj-name').value = repo.name.toUpperCase().replace(/-/g,' ').replace(/_/g,' ');
+  document.getElementById('proj-desc').value = repo.description || '';
+  document.getElementById('proj-fulldesc').value = repo.description || '';
+  document.getElementById('proj-github').value = repo.html_url;
+  document.getElementById('proj-tag').value = (repo.language || 'PROJECT').toUpperCase();
+  document.getElementById('proj-status').value = repo.archived ? 'ARCHIVED' : 'LIVE';
+  document.getElementById('proj-duration').value = formatRepoAge(repo.created_at, repo.pushed_at);
+  if(repo.language){ addTechTag(repo.language); }
+  if(Array.isArray(repo.topics)){ repo.topics.slice(0,5).forEach(function(t){ addTechTag(t); }); }
+  toast('Imported "' + repo.name + '" — review and save below', 'ok');
+  document.getElementById('project-form').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function formatRepoAge(created, pushed){
+  if(!created) return '';
+  var c = new Date(created), p = pushed ? new Date(pushed) : new Date();
+  var months = Math.max(1, Math.round((p - c) / (1000*60*60*24*30)));
+  return months === 1 ? '1 month' : months + ' months';
+}
+
+/* ════════════════════════════════════════════════
+   TECH TAGS INPUT
+══════════════════════════════════════════════════ */
+let currentTechTags = [];
+function addTechTag(tag){
+  tag = tag.trim();
+  if(!tag || currentTechTags.indexOf(tag) !== -1) return;
+  currentTechTags.push(tag);
+  renderTechTags();
+}
+function removeTechTag(tag){
+  currentTechTags = currentTechTags.filter(function(t){ return t !== tag; });
+  renderTechTags();
+}
+function renderTechTags(){
+  var c = document.getElementById('proj-tech-tags');
+  c.innerHTML = '';
+  currentTechTags.forEach(function(t){
+    var el = document.createElement('span');
+    el.className = 'tech-tag';
+    el.innerHTML = escHtml(t) + ' <button type="button">&times;</button>';
+    el.querySelector('button').addEventListener('click', function(){ removeTechTag(t); });
+    c.appendChild(el);
+  });
+}
+document.getElementById('proj-tech-input').addEventListener('keydown', function(e){
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    addTechTag(this.value);
+    this.value = '';
+  }
+});
+
+/* ════════════════════════════════════════════════
+   TIMELINE ROWS
+══════════════════════════════════════════════════ */
+let currentTimeline = [];
+function renderTimelineRows(){
+  var c = document.getElementById('proj-timeline-rows');
+  c.innerHTML = '';
+  currentTimeline.forEach(function(item, idx){
+    var row = document.createElement('div');
+    row.className = 'timeline-row';
+    row.innerHTML = '<input type="text" placeholder="PHASE NAME" value="' + escAttr(item.phase) + '" data-field="phase" data-idx="' + idx + '">'
+      + '<input type="text" placeholder="What happened in this phase" value="' + escAttr(item.detail) + '" data-field="detail" data-idx="' + idx + '">'
+      + '<button type="button" class="btn btn-sm btn-danger" data-remove="' + idx + '">&times;</button>';
+    c.appendChild(row);
+  });
+  c.querySelectorAll('input').forEach(function(inp){
+    inp.addEventListener('input', function(){
+      var idx = parseInt(this.dataset.idx, 10);
+      currentTimeline[idx][this.dataset.field] = this.value;
+    });
+  });
+  c.querySelectorAll('[data-remove]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      currentTimeline.splice(parseInt(this.dataset.remove, 10), 1);
+      renderTimelineRows();
+    });
+  });
+}
+document.getElementById('add-timeline-row').addEventListener('click', function(){
+  currentTimeline.push({ phase: '', detail: '' });
+  renderTimelineRows();
+});
+
+/* ════════════════════════════════════════════════
+   PROJECT FORM
+══════════════════════════════════════════════════ */
+function resetProjectForm(){
+  document.getElementById('project-form').reset();
+  document.getElementById('proj-id').value = '';
+  document.getElementById('proj-xp').value = 50;
+  currentTechTags = [];
+  currentTimeline = [];
+  renderTechTags();
+  renderTimelineRows();
+  document.getElementById('project-form-title').textContent = '// NEW PROJECT';
+  document.getElementById('proj-submit-btn').textContent = 'SAVE PROJECT';
+  document.getElementById('proj-cancel-btn').style.display = 'none';
+}
+document.getElementById('proj-cancel-btn').addEventListener('click', resetProjectForm);
+
+document.getElementById('project-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  if(!sb) return;
+  var id = document.getElementById('proj-id').value;
+  var payload = {
+    name: document.getElementById('proj-name').value.trim(),
+    tag: document.getElementById('proj-tag').value.trim(),
+    short_desc: document.getElementById('proj-desc').value.trim(),
+    full_desc: document.getElementById('proj-fulldesc').value.trim(),
+    tech: currentTechTags,
+    demo_url: document.getElementById('proj-demo').value.trim(),
+    github_url: document.getElementById('proj-github').value.trim(),
+    status: document.getElementById('proj-status').value,
+    duration: document.getElementById('proj-duration').value.trim(),
+    commits: document.getElementById('proj-commits').value.trim(),
+    lines: document.getElementById('proj-lines').value.trim(),
+    timeline: currentTimeline.filter(function(t){ return t.phase || t.detail; }),
+    xp: parseInt(document.getElementById('proj-xp').value, 10) || 0,
+    locked: document.getElementById('proj-locked').checked,
+  };
+  var btn = document.getElementById('proj-submit-btn');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+  try{
+    var result;
+    if(id){
+      result = await sb.from('projects').update(payload).eq('id', id);
+    } else {
+      result = await sb.from('projects').insert(payload);
+    }
+    if(result.error){
+      toast('Error: ' + result.error.message, 'err');
+    } else {
+      toast(id ? 'Project updated' : 'Project added', 'ok');
+      resetProjectForm();
+      loadProjects();
+    }
+  }catch(err){
+    toast('Unexpected error: ' + err.message, 'err');
+  }
+  btn.disabled = false; btn.textContent = 'SAVE PROJECT';
+});
+
+async function loadProjects(){
+  var list = document.getElementById('projects-list');
+  if(!sb) return;
+  list.innerHTML = '<div class="loading-row"><span class="spinner"></span> Loading...</div>';
+  const { data, error } = await sb.from('projects').select('*').order('created_at', { ascending: false });
+  if(error){ list.innerHTML = '<div class="empty-list">Error loading projects: ' + escHtml(error.message) + '</div>'; return; }
+  if(!data.length){ list.innerHTML = '<div class="empty-list">No projects yet. Add one above, or import from GitHub.</div>'; return; }
+  list.innerHTML = '';
+  data.forEach(function(p){
+    var row = document.createElement('div');
+    row.className = 'item-row';
+    row.innerHTML = '<div class="item-info"><div class="item-name">' + escHtml(p.name) + '</div>'
+      + '<div class="item-meta"><span class="item-tag">' + escHtml(p.tag) + '</span><span>' + escHtml(p.status||'') + '</span>'
+      + (p.locked ? '<span style="color:#FF4444">LOCKED</span>' : '') + '</div></div>'
+      + '<div class="item-actions">'
+      + '<button class="btn btn-sm" data-edit="' + p.id + '">EDIT</button>'
+      + '<button class="btn btn-sm btn-danger" data-delete="' + p.id + '">DELETE</button>'
+      + '</div>';
+    row.querySelector('[data-edit]').addEventListener('click', function(){ editProject(p); });
+    row.querySelector('[data-delete]').addEventListener('click', function(){ confirmDelete('projects', p.id, p.name, loadProjects); });
+    list.appendChild(row);
+  });
+}
+
+function editProject(p){
+  document.getElementById('proj-id').value = p.id;
+  document.getElementById('proj-name').value = p.name || '';
+  document.getElementById('proj-tag').value = p.tag || '';
+  document.getElementById('proj-desc').value = p.short_desc || '';
+  document.getElementById('proj-fulldesc').value = p.full_desc || '';
+  document.getElementById('proj-demo').value = p.demo_url || '';
+  document.getElementById('proj-github').value = p.github_url || '';
+  document.getElementById('proj-status').value = p.status || 'LIVE';
+  document.getElementById('proj-duration').value = p.duration || '';
+  document.getElementById('proj-commits').value = p.commits || '';
+  document.getElementById('proj-lines').value = p.lines || '';
+  document.getElementById('proj-xp').value = p.xp || 50;
+  document.getElementById('proj-locked').checked = !!p.locked;
+  currentTechTags = (p.tech || []).slice();
+  currentTimeline = (p.timeline || []).map(function(t){ return { phase: t.phase || '', detail: t.detail || '' }; });
+  renderTechTags();
+  renderTimelineRows();
+  document.getElementById('project-form-title').textContent = '// EDITING: ' + p.name;
+  document.getElementById('proj-submit-btn').textContent = 'UPDATE PROJECT';
+  document.getElementById('proj-cancel-btn').style.display = 'inline-block';
+  document.getElementById('project-form').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ════════════════════════════════════════════════
+   CLIP FORM
+══════════════════════════════════════════════════ */
+let clipThumbDataUrl = null;
+let clipThumbFile = null;
+let existingThumbUrl = '';
+
+const CLIP_TYPE_CONFIG = {
+  youtube: { label: 'YouTube Video ID', hint: 'The part after "v=" in the YouTube URL.', placeholder: 'dQw4w9WgXcQ' },
+  twitch:  { label: 'Twitch Channel Name', hint: 'Your Twitch username, e.g. samscript_57377.', placeholder: 'samscript_57377' },
+  url:     { label: 'Direct Video URL', hint: 'A direct link to an embeddable video.', placeholder: 'https://...' },
+};
+document.getElementById('clip-type').addEventListener('change', function(){
+  var cfg = CLIP_TYPE_CONFIG[this.value];
+  document.getElementById('clip-src-label').innerHTML = cfg.label + ' <span class="req">*</span>';
+  document.getElementById('clip-src-hint').textContent = cfg.hint;
+  document.getElementById('clip-src').placeholder = cfg.placeholder;
+});
+
+document.getElementById('clip-thumb-drop').addEventListener('click', function(e){
+  if(e.target.tagName !== 'BUTTON'){ document.getElementById('clip-thumb-file').click(); }
+});
+document.getElementById('clip-thumb-file').addEventListener('change', function(e){
+  var file = e.target.files[0];
+  if(!file) return;
+  clipThumbFile = file;
+  var reader = new FileReader();
+  reader.onload = function(ev){
+    clipThumbDataUrl = ev.target.result;
+    renderThumbPreview();
+  };
+  reader.readAsDataURL(file);
+});
+function renderThumbPreview(){
+  var drop = document.getElementById('clip-thumb-drop');
+  var src = clipThumbDataUrl || existingThumbUrl;
+  if(src){
+    drop.classList.add('has-image');
+    drop.innerHTML = '<img class="thumb-preview" src="' + src + '"><button type="button" class="thumb-remove" id="thumb-remove-btn">&times;</button><input type="file" id="clip-thumb-file" accept="image/*" style="display:none">';
+    document.getElementById('thumb-remove-btn').addEventListener('click', function(e){
+      e.stopPropagation();
+      clipThumbDataUrl = null; clipThumbFile = null; existingThumbUrl = '';
+      renderThumbPreview();
+    });
+    document.getElementById('clip-thumb-file').addEventListener('change', function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      clipThumbFile = file;
+      var reader = new FileReader();
+      reader.onload = function(ev){ clipThumbDataUrl = ev.target.result; renderThumbPreview(); };
+      reader.readAsDataURL(file);
+    });
+  } else {
+    drop.classList.remove('has-image');
+    drop.innerHTML = '<input type="file" id="clip-thumb-file" accept="image/*"><div class="thumb-drop-label">Click to upload a thumbnail (optional)</div>';
+    document.getElementById('clip-thumb-file').addEventListener('change', function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      clipThumbFile = file;
+      var reader = new FileReader();
+      reader.onload = function(ev){ clipThumbDataUrl = ev.target.result; renderThumbPreview(); };
+      reader.readAsDataURL(file);
+    });
+  }
+}
+
+function resetClipForm(){
+  document.getElementById('clip-form').reset();
+  document.getElementById('clip-id').value = '';
+  document.getElementById('clip-type').value = 'youtube';
+  document.getElementById('clip-type').dispatchEvent(new Event('change'));
+  clipThumbDataUrl = null; clipThumbFile = null; existingThumbUrl = '';
+  renderThumbPreview();
+  document.getElementById('clip-form-title').textContent = '// NEW CLIP';
+  document.getElementById('clip-submit-btn').textContent = 'SAVE CLIP';
+  document.getElementById('clip-cancel-btn').style.display = 'none';
+}
+document.getElementById('clip-cancel-btn').addEventListener('click', resetClipForm);
+
+async function uploadThumbnail(file){
+  if(!file || !sb) return existingThumbUrl || '';
+  var ext = file.name.split('.').pop();
+  var path = 'clip-' + Date.now() + '-' + Math.random().toString(36).slice(2,8) + '.' + ext;
+  const { error } = await sb.storage.from('thumbnails').upload(path, file, { cacheControl: '3600', upsert: false });
+  if(error){ throw error; }
+  const { data } = sb.storage.from('thumbnails').getPublicUrl(path);
+  return data.publicUrl;
+}
+
+document.getElementById('clip-form').addEventListener('submit', async function(e){
+  e.preventDefault();
+  if(!sb) return;
+  var id = document.getElementById('clip-id').value;
+  var btn = document.getElementById('clip-submit-btn');
+  btn.disabled = true; btn.textContent = 'SAVING...';
+  try{
+    var thumbUrl = existingThumbUrl;
+    if(clipThumbFile){
+      toast('Uploading thumbnail...', '');
+      thumbUrl = await uploadThumbnail(clipThumbFile);
+    } else if(clipThumbDataUrl === null && existingThumbUrl === ''){
+      thumbUrl = '';
+    }
+    var payload = {
+      title: document.getElementById('clip-title').value.trim(),
+      cat: document.getElementById('clip-cat').value.trim() || 'VIDEO',
+      type: document.getElementById('clip-type').value,
+      src: document.getElementById('clip-src').value.trim(),
+      thumbnail_url: thumbUrl,
+    };
+    var result;
+    if(id){
+      result = await sb.from('clips').update(payload).eq('id', id);
+    } else {
+      result = await sb.from('clips').insert(payload);
+    }
+    if(result.error){
+      toast('Error: ' + result.error.message, 'err');
+    } else {
+      toast(id ? 'Clip updated' : 'Clip added', 'ok');
+      resetClipForm();
+      loadClips();
+    }
+  }catch(err){
+    toast('Error uploading: ' + err.message, 'err');
+  }
+  btn.disabled = false; btn.textContent = 'SAVE CLIP';
+});
+
+async function loadClips(){
+  var list = document.getElementById('clips-list');
+  if(!sb) return;
+  list.innerHTML = '<div class="loading-row"><span class="spinner"></span> Loading...</div>';
+  const { data, error } = await sb.from('clips').select('*').order('created_at', { ascending: false });
+  if(error){ list.innerHTML = '<div class="empty-list">Error loading clips: ' + escHtml(error.message) + '</div>'; return; }
+  if(!data.length){ list.innerHTML = '<div class="empty-list">No clips yet. Add one above.</div>'; return; }
+  list.innerHTML = '';
+  data.forEach(function(c){
+    var row = document.createElement('div');
+    row.className = 'item-row';
+    var thumbHtml = c.thumbnail_url ? '<img class="item-thumb" src="' + c.thumbnail_url + '">' : '<div class="item-thumb"></div>';
+    row.innerHTML = thumbHtml
+      + '<div class="item-info"><div class="item-name">' + escHtml(c.title) + '</div>'
+      + '<div class="item-meta"><span class="item-tag">' + escHtml(c.cat||'') + '</span><span>' + escHtml(c.type) + ': ' + escHtml(c.src) + '</span></div></div>'
+      + '<div class="item-actions">'
+      + '<button class="btn btn-sm" data-edit="' + c.id + '">EDIT</button>'
+      + '<button class="btn btn-sm btn-danger" data-delete="' + c.id + '">DELETE</button>'
+      + '</div>';
+    row.querySelector('[data-edit]').addEventListener('click', function(){ editClip(c); });
+    row.querySelector('[data-delete]').addEventListener('click', function(){ confirmDelete('clips', c.id, c.title, loadClips); });
+    list.appendChild(row);
+  });
+}
+
+function editClip(c){
+  document.getElementById('clip-id').value = c.id;
+  document.getElementById('clip-title').value = c.title || '';
+  document.getElementById('clip-cat').value = c.cat || '';
+  document.getElementById('clip-type').value = c.type || 'youtube';
+  document.getElementById('clip-type').dispatchEvent(new Event('change'));
+  document.getElementById('clip-src').value = c.src || '';
+  existingThumbUrl = c.thumbnail_url || '';
+  clipThumbDataUrl = null; clipThumbFile = null;
+  renderThumbPreview();
+  document.getElementById('clip-form-title').textContent = '// EDITING: ' + c.title;
+  document.getElementById('clip-submit-btn').textContent = 'UPDATE CLIP';
+  document.getElementById('clip-cancel-btn').style.display = 'inline-block';
+  document.getElementById('clip-form').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+/* ════════════════════════════════════════════════
+   DELETE CONFIRMATION
+══════════════════════════════════════════════════ */
+let pendingDelete = null;
+function confirmDelete(table, id, name, onDone){
+  pendingDelete = { table: table, id: id, onDone: onDone };
+  document.getElementById('confirm-msg').textContent = 'Delete "' + name + '"? This cannot be undone.';
+  document.getElementById('confirm-modal').classList.add('open');
+}
+document.getElementById('confirm-cancel').addEventListener('click', function(){
+  document.getElementById('confirm-modal').classList.remove('open');
+  pendingDelete = null;
+});
+document.getElementById('confirm-ok').addEventListener('click', async function(){
+  if(!pendingDelete || !sb) return;
+  var d = pendingDelete;
+  const { error } = await sb.from(d.table).delete().eq('id', d.id);
+  document.getElementById('confirm-modal').classList.remove('open');
+  if(error){ toast('Delete failed: ' + error.message, 'err'); }
+  else { toast('Deleted', 'ok'); d.onDone(); }
+  pendingDelete = null;
+});
+
+/* ════════════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════════════ */
+function escHtml(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escAttr(s){ return String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+/* ════════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════════ */
+resetProjectForm();
+resetClipForm();
+checkAuth();
+</script>
+</body>
+</html>

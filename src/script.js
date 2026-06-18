@@ -6,75 +6,22 @@ const DATA = {
     { name: 'Node.js', pct: 85 }, { name: 'Java', pct: 60 },
     { name: 'C#', pct: 45 }, { name: 'Lua', pct: 85 },
   ],
-  projects: [
-    {
-      id: 1, name: 'VISUAL MUSIC', tag: 'WEB APP',
-      desc: 'Real-time audio visualiser with cool graphics and multiple themes.',
-      fullDesc: 'A website where users can upload a song and see it come to life with waveforms, spectrums and particle effects. Built with Vite, using the Canvas and Web Audio APIs. Features include multiple themes and a sleek Vite dashboard for control.',
-      tech: ['Vite', 'JavaScript', 'JSX', 'Canvas API', 'Web Audio API'],
-      demo: 'https://samscript57377.github.io/visual-music', github: 'https://github.com/samscript57377/visual-music',
-      status: 'LIVE', duration: '3 weeks', commits: '8', lines: '865',
-      timeline: [
-        { phase: 'FIRST STEPS', detail: 'Project setup, initial design' },
-        { phase: '3D OBJECTS', detail: 'Flying objects in 3D space' },
-        { phase: 'CANVAS', detail: 'Canvas rendering and animation' },
-        { phase: 'BARS', detail: 'Waveform bars and performance optimizations' },
-      ], xp: 80, locked: false
-    },
-    {
-      id: 2, name: 'CHAT SERVER', tag: 'BACKEND',
-      desc: 'Real-time chat server with WebSocket support and message persistence.',
-      fullDesc: 'A scalable chat server built with Node.js and ws, featuring real-time messaging, user authentication, and message persistence.',
-      tech: ['Node.js', 'WebSocket', 'JavaScript'],
-      demo: '', github: 'https://github.com/samscript57377/simple-ws-chat-server',
-      status: 'OFFLINE', duration: '2 weeks', commits: '3', lines: '179',
-      timeline: [
-        { phase: 'CREATION', detail: 'Creating the chat server' },
-        { phase: 'CLEANUP', detail: 'Code refactoring, performance improvements & bug fixes' },
-      ], xp: 60, locked: false
-    },
-    {
-      id: 3, name: 'SAMSCRIPT PORTOFOLIO', tag: 'WEB APP',
-      desc: 'My personal portfolio website showcasing my projects and skills.',
-      fullDesc: 'This is my own portfolio website, designed to showcase my projects and skills. It features a futuristic design with interactive elements and a skill tree.',
-      tech: ['HTML/CSS', 'JavaScript'],
-      demo: 'https://samscript57377.github.io', github: '',
-      status: 'LIVE', duration: '5 weeks', commits: '5', lines: '2.3k',
-      timeline: [
-        { phase: 'FOUNDATION', detail: 'Created my very first portofolio' },
-        { phase: 'INFORMATION', detail: 'Added new information to my portofolio' },
-        { phase: 'REDESIGN', detail: 'Redesigned to make my portofolio look very futuristic' },
-        { phase: 'GAMIFY', detail: 'Added game elements like advancements' },
-      ], xp: 70, locked: false
-    },
-    {
-      id: 4, name: '???', tag: 'CLASSIFIED',
-      desc: 'Mission details redacted. Hack the terminal to decrypt.',
-      fullDesc: '', tech: [], demo: '', github: '',
-      status: 'CLASSIFIED', duration: '?', commits: '?', lines: '?',
-      timeline: [], xp: 0, locked: true
-    },
-  ],
-  clips: [
-    //{ title: 'LIVE STREAM', cat: 'TWITCH', type: 'twitch', src: 'samscript_57377' },
-    //{ title: 'PROJECT DEMO', cat: 'YOUTUBE', type: 'youtube', src: '' },
-    //{ title: 'CODE WALKTHROUGH', cat: 'YOUTUBE', type: 'youtube', src: '' },
-  ],
+  projects: [],
+  clips: [],
   achievements: [
-    { id: 'boot', icon: '&#x1F680;', name: 'FIRST BOOT', desc: 'Launched the portfolio', xp: 50, earn: false, secret: false },
-    { id: 'projects', icon: '&#x1F4BE;', name: 'MISSION BOARD', desc: 'Visited the projects section', xp: 75, earn: false, secret: false },
-    { id: 'clips', icon: '&#x1F4E1;', name: 'MEDIA ACCESS', desc: 'Opened a clip', xp: 60, earn: false, secret: false },
-    { id: 'contact', icon: '&#x1F4F6;', name: 'COMM LINK', desc: 'Opened the contact panel', xp: 50, earn: false, secret: false },
-    { id: 'allnav', icon: '&#x1F310;', name: 'FULL SCAN', desc: 'Visited every section', xp: 150, earn: false, secret: false },
-    { id: 'clicker', icon: '&#x1F446;', name: 'CURIOUS MIND', desc: 'Clicked every project card', xp: 100, earn: false, secret: false },
-    { id: 'combo5', icon: '&#x26A1;', name: 'RAPID FIRE', desc: 'Reached a 5x combo', xp: 80, earn: false, secret: false },
-    { id: 'hacked', icon: '&#x1F513;', name: 'BREACH COMPLETE', desc: 'Solved the hacking terminal', xp: 200, earn: false, secret: false },
-    { id: 'skilltree', icon: '&#x1F33F;', name: 'SKILL INSPECTOR', desc: 'Clicked a skill tree node', xp: 40, earn: false, secret: false },
-    { id: 'streak3', icon: '&#x1F525;', name: 'HOT STREAK', desc: '3-day login streak', xp: 120, earn: false, secret: false },
-    { id: 'shopper', icon: '&#x1F6CD;', name: 'THEME UNLOCKED', desc: 'Purchased a theme from the shop', xp: 30, earn: false, secret: false },
-    { id: 'lb', icon: '&#x1F3C5;', name: 'ON THE BOARD', desc: 'Appeared on the leaderboard', xp: 40, earn: false, secret: false },
-    { id: 'easter', icon: '&#x1F47B;', name: 'GHOST PROTOCOL', desc: 'Found the hidden easter egg', xp: 200, earn: false, secret: true },
-    { id: 'maxrank', icon: '&#x1F451;', name: 'LEGEND STATUS', desc: 'Reached maximum rank', xp: 0, earn: false, secret: false },
+    { id: 'boot', icon: '&#x1F680;', name: 'FIRST BOOT', desc: 'Launched the portfolio', hint: 'Happens automatically when the site finishes loading.', xp: 50, earn: false, secret: false },
+    { id: 'projects', icon: '&#x1F4BE;', name: 'MISSION BOARD', desc: 'Opened a project card to read its brief', hint: 'Go to Projects and click any card.', xp: 75, earn: false, secret: false },
+    { id: 'clips', icon: '&#x1F4E1;', name: 'MEDIA ACCESS', desc: 'Watched something in the Media Vault', hint: 'Go to Clips and click any thumbnail.', xp: 60, earn: false, secret: false },
+    { id: 'contact', icon: '&#x1F4F6;', name: 'COMM LINK', desc: 'Opened the Contact page', hint: 'Click the Contact tab in the nav bar.', xp: 50, earn: false, secret: false },
+    { id: 'allnav', icon: '&#x1F310;', name: 'FULL SCAN', desc: 'Visited every page on the site', hint: 'Click through Home, Projects, Clips, Achievements and Contact.', xp: 150, earn: false, secret: false },
+    { id: 'clicker', icon: '&#x1F446;', name: 'CURIOUS MIND', desc: 'Opened every project on the site', hint: 'Click through all the project cards, including the locked one.', xp: 100, earn: false, secret: false },
+    { id: 'combo5', icon: '&#x26A1;', name: 'RAPID FIRE', desc: 'Interacted with the site 5 times quickly', hint: 'Click around quickly &mdash; nav links, cards, anything.', xp: 80, earn: false, secret: false },
+    { id: 'hacked', icon: '&#x1F513;', name: 'BREACH COMPLETE', desc: 'Solved the hidden hacking mini-game', hint: 'Find the locked project card and try the terminal on it.', xp: 200, earn: false, secret: false },
+    { id: 'skilltree', icon: '&#x1F33F;', name: 'SKILL INSPECTOR', desc: 'Inspected a node on the skill tree', hint: 'On Home, click any node in the Skill Tree diagram.', xp: 40, earn: false, secret: false },
+    { id: 'streak3', icon: '&#x1F525;', name: 'HOT STREAK', desc: 'Visited on 3 separate days in a row', hint: 'Come back and open the site again tomorrow.', xp: 120, earn: false, secret: false },
+    { id: 'social', icon: '&#x1F4E1;', name: 'NETWORK LINKED', desc: 'Clicked through to a social profile', hint: 'On Contact, click Discord, GitHub or Twitch.', xp: 40, earn: false, secret: false },
+    { id: 'easter', icon: '&#x1F47B;', name: 'GHOST PROTOCOL', desc: 'Found a hidden easter egg', hint: '???', xp: 200, earn: false, secret: true },
+    { id: 'maxrank', icon: '&#x1F451;', name: 'LEGEND STATUS', desc: 'Reached the maximum rank', hint: 'Keep earning XP across the site to rank up.', xp: 0, earn: false, secret: false },
   ],
   socials: [
     { name: 'DISCORD', handle: 'samscript_573777', url: 'https://discord.com/users/samscript_573777', icon: 'discord', sub: 'Send a message' },
@@ -85,15 +32,68 @@ const DATA = {
     { name: 'ROOKIE', min: 0 }, { name: 'CODER', min: 150 }, { name: 'HACKER', min: 350 },
     { name: 'ARCHITECT', min: 600 }, { name: 'LEGEND', min: 900 },
   ],
-  themes: [
-    { id: 'cyan', name: 'CYAN', color: '#00FFFF', cost: 0, owned: true, active: true },
-    { id: 'green', name: 'MATRIX', color: '#00FF88', cost: 200, owned: false, active: false },
-    { id: 'purple', name: 'NEBULA', color: '#CC44FF', cost: 350, owned: false, active: false },
-    { id: 'orange', name: 'INFERNO', color: '#FF8800', cost: 500, owned: false, active: false },
-    { id: 'pink', name: 'SYNTHWAVE', color: '#FF44CC', cost: 700, owned: false, active: false },
-    { id: 'white', name: 'GHOST', color: '#FFFFFF', cost: 900, owned: false, active: false },
-  ],
 };
+
+/* ── SUPABASE CLIENT ── */
+const SUPABASE_URL = 'https://ahcqzyflynyshwkigfvx.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFoY3F6eWZseW55c2h3a2lnZnZ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3MTMxMTQsImV4cCI6MjA5NzI4OTExNH0.Vm2riF8isNVrXHltZ9GlpW0mkq9AqR38MwCLMbtXlqM';
+let sb = null;
+try {
+  if (window.supabase && SUPABASE_URL.indexOf('YOUR_SUPABASE') === -1) {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  }
+} catch (e) { console.error('Supabase init failed:', e); }
+
+/* ── LOAD PROJECTS + CLIPS FROM SUPABASE ── */
+function mapDbProject(row) {
+  return {
+    id: row.id,
+    name: row.name,
+    tag: row.tag,
+    desc: row.short_desc,
+    fullDesc: row.full_desc || row.short_desc,
+    tech: row.tech || [],
+    demo: row.demo_url || '',
+    github: row.github_url || '',
+    status: row.status || 'LIVE',
+    duration: row.duration || '',
+    commits: row.commits || '',
+    lines: row.lines || '',
+    timeline: row.timeline || [],
+    xp: row.xp || 50,
+    locked: !!row.locked,
+  };
+}
+function mapDbClip(row) {
+  return {
+    id: row.id,
+    title: row.title,
+    cat: row.cat || 'VIDEO',
+    type: row.type,
+    src: row.src,
+    thumb: row.thumbnail_url || '',
+  };
+}
+
+async function loadProjectsFromDb() {
+  if (!sb) {
+    console.warn('Supabase not configured — showing empty state. Edit SUPABASE_URL / SUPABASE_ANON_KEY in this file.');
+    return [];
+  }
+  try {
+    const { data, error } = await sb.from('projects').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: true });
+    if (error) { console.error('Error loading projects:', error); return []; }
+    return (data || []).map(mapDbProject);
+  } catch (e) { console.error('Error loading projects:', e); return []; }
+}
+async function loadClipsFromDb() {
+  if (!sb) { return []; }
+  try {
+    const { data, error } = await sb.from('clips').select('*').order('sort_order', { ascending: true }).order('created_at', { ascending: true });
+    if (error) { console.error('Error loading clips:', error); return []; }
+    return (data || []).map(mapDbClip);
+  } catch (e) { console.error('Error loading clips:', e); return []; }
+}
 
 /* ── AUDIO ── */
 let _ac = null;
@@ -416,6 +416,7 @@ var COMMANDS = {
   'cat classified.txt': function () { openHack(); return '<span style="color:#44FF88">ACCESS DENIED \u2014 HACK TERMINAL REQUIRED</span>'; },
   'nmap localhost': function () { addXP(15, 'PORT SCAN'); return 'PORT   STATE SERVICE\n22/tcp open  ssh\n80/tcp open  http\n443/tcp open https\n1337/tcp open SAMSCRIPT'; },
   neofetch: function () { addXP(10, 'NEOFETCH'); return 'OS: PortfolioOS v5.0\nKernel: SamScript-5.0\nShell: cyber-zsh\nXP: ' + S.xp + '\nRank: ' + DATA.ranks[S.rankIdx].name; },
+  'sudo admin': function () { addXP(50, 'ADMIN ACCESS'); setTimeout(function () { window.location.href = '/admin'; }, 3000); return '<span style="color:#44FF88">ADMINISTRATOR MODE ENABLED. REDIRECTING...</span>'; },
 };
 function runTermCmd(raw) {
   var cmd = raw.trim().toLowerCase();
@@ -455,14 +456,14 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 /* ── TERMINAL FEED ── */
-var TERM = [
-  { t: '> SYSTEM BOOT', v: 'OK' }, { t: '> OPERATOR', v: 'SAMSCRIPT' },
-  { t: '> GITHUB', v: 'samscript57377' }, { t: '> TWITCH', v: 'samscript_57377' },
-  { t: '> PROJECTS', v: DATA.projects.filter(function (p) { return !p.locked; }).length },
-  { t: '> ACHIEVEMENTS', v: DATA.achievements.length },
-  { t: '> TIP', v: 'type "help" in terminal below' },
-];
 function typeTerminal() {
+  var TERM = [
+    { t: '> SYSTEM BOOT', v: 'OK' }, { t: '> OPERATOR', v: 'SAMSCRIPT' },
+    { t: '> GITHUB', v: 'samscript57377' }, { t: '> TWITCH', v: 'samscript_57377' },
+    { t: '> PROJECTS', v: DATA.projects.filter(function (p) { return !p.locked; }).length },
+    { t: '> ACHIEVEMENTS', v: DATA.achievements.length },
+    { t: '> TIP', v: 'type "help" in terminal below' },
+  ];
   var feed = document.getElementById('feed'), i = 0;
   function next() {
     if (i >= TERM.length) {
@@ -512,9 +513,12 @@ document.getElementById('logo').addEventListener('click', function () {
 
 /* ── PROJECTS ── */
 function buildProjects() {
+  var fb = document.getElementById('filter-btns'); fb.innerHTML = '';
+  var unlocked = DATA.projects.filter(function (p) { return !p.locked; });
+  document.getElementById('pnotif').textContent = unlocked.length;
+  document.getElementById('sv-proj').textContent = unlocked.length;
   var tags = ['ALL'];
-  DATA.projects.filter(function (p) { return !p.locked; }).forEach(function (p) { if (tags.indexOf(p.tag) < 0) tags.push(p.tag); });
-  var fb = document.getElementById('filter-btns');
+  unlocked.forEach(function (p) { if (tags.indexOf(p.tag) < 0) tags.push(p.tag); });
   tags.forEach(function (t) {
     var b = document.createElement('button'); b.className = 'ftag' + (t === 'ALL' ? ' on' : ''); b.textContent = t;
     b.addEventListener('click', function () {
@@ -528,6 +532,10 @@ function buildProjects() {
 }
 function renderProjects() {
   var g = document.getElementById('proj-grid'); g.innerHTML = '';
+  if (!DATA.projects.length) {
+    g.innerHTML = '<div style="grid-column:1/-1;padding:30px;text-align:center;border:1px solid var(--border);background:var(--w05)"><div style="font-size:24px;opacity:.2;margin-bottom:10px">&#x1F4E6;</div><div style="font-family:var(--hud);font-size:10px;letter-spacing:2px;color:var(--w40)">NO PROJECTS YET</div><div style="font-size:10px;color:var(--w20);margin-top:6px">Check back later.</div></div>';
+    return;
+  }
   DATA.projects.forEach(function (p) {
     if (!p.locked && S.filterTag !== 'ALL' && p.tag !== S.filterTag) return;
     var d = document.createElement('div'); d.className = 'proj-card' + (p.locked ? ' locked' : '');
@@ -600,10 +608,15 @@ function closeProjModal() { document.getElementById('proj-modal').classList.remo
 
 /* ── CLIPS ── */
 function buildClips() {
-  var g = document.getElementById('clips-grid');
+  var g = document.getElementById('clips-grid'); g.innerHTML = '';
+  if (!DATA.clips.length) {
+    g.innerHTML = '<div style="grid-column:1/-1;padding:30px;text-align:center;border:1px solid var(--border);background:var(--w05)"><div style="font-size:24px;opacity:.2;margin-bottom:10px">&#x1F4F9;</div><div style="font-family:var(--hud);font-size:10px;letter-spacing:2px;color:var(--w40)">NO CLIPS YET</div><div style="font-size:10px;color:var(--w20);margin-top:6px">Check back later.</div></div>';
+    return;
+  }
   DATA.clips.forEach(function (clip) {
     var d = document.createElement('div'); d.className = 'clip-card';
-    d.innerHTML = '<div class="clip-thumb"><div class="clip-thumb-bg"></div>'
+    var thumbHtml = clip.thumb ? '<img src="' + clip.thumb + '" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">' : '';
+    d.innerHTML = '<div class="clip-thumb">' + thumbHtml + '<div class="clip-thumb-bg"></div>'
       + '<span class="clip-pi">&#x25BA;</span>'
       + '<div class="clip-ov"><div class="play-ring">&#x25BA;</div></div></div>'
       + '<div class="clip-info"><span class="clip-badge">' + clip.cat + '</span>'
@@ -707,15 +720,10 @@ function hackKey(e) {
       hackDone = true;
       document.getElementById('hack-banner').classList.add('show');
       unlockAch('hacked');
-      var proj = DATA.projects.find(function (p) { return p.id === 4; });
+      var proj = DATA.projects.find(function (p) { return p.locked; });
       if (proj) {
-        proj.locked = false; proj.name = 'VOID ENGINE'; proj.tag = 'GAME ENGINE';
-        proj.desc = 'A custom 2D game engine written from scratch in C++ with a WebAssembly export target.';
-        proj.fullDesc = 'Hand-rolled 2D engine featuring an ECS architecture, custom physics solver, WebGL renderer and WASM compilation via Emscripten. Exports playable builds directly to the browser.';
-        proj.tech = ['C++', 'WASM', 'WebGL', 'Emscripten']; proj.xp = 150; proj.status = 'WIP';
-        proj.duration = 'ongoing'; proj.commits = '?'; proj.lines = '12k+';
-        proj.timeline = [{ phase: 'ECS CORE', detail: 'Entity/component/system architecture' }, { phase: 'RENDERER', detail: 'WebGL 2.0 sprite and tilemap renderer' }, { phase: 'PHYSICS', detail: 'AABB collision, velocity integration' }, { phase: 'WASM EXPORT', detail: 'Emscripten toolchain, browser runtime' }];
-        addXP(150, 'VOID ENGINE UNLOCKED');
+        proj.locked = false;
+        addXP(proj.xp || 100, proj.name + ' UNLOCKED');
       }
       toast('\uD83D\uDD13 CLASSIFIED PROJECT DECRYPTED', 'hack');
       setTimeout(function () { closeHack(); renderProjects(); }, 2000);
@@ -733,9 +741,9 @@ function hackKey(e) {
 /* ── BOOT ── */
 var BOOT_LINES = [
   'LOADING KERNEL MODULES...', 'ESTABLISHING NEURAL LINK...',
-  'DECRYPTING MISSION FILES...', 'CALIBRATING HOLOGRAPHIC EMITTERS...',
+  'CONNECTING TO MISSION DATABASE...', 'CALIBRATING HOLOGRAPHIC EMITTERS...',
   'COMPILING SKILL MATRIX...', 'LOADING ACHIEVEMENT VAULT...',
-  'SYNCING LEADERBOARD DATA...', 'OPERATOR: SAMSCRIPT // AUTHENTICATED',
+  'OPERATOR: SAMSCRIPT // AUTHENTICATED',
   'ALL SYSTEMS NOMINAL — WELCOME BACK',
 ];
 function runBoot() {
@@ -779,4 +787,15 @@ function initSkillBars() {
 }
 
 /* ── INIT ── */
-buildSkills(); buildProjects(); buildClips(); buildSocials(); refreshAch(); runBoot();
+async function initApp() {
+  buildSkills();
+  buildSocials();
+  refreshAch();
+  const [projects, clips] = await Promise.all([loadProjectsFromDb(), loadClipsFromDb()]);
+  DATA.projects = projects;
+  DATA.clips = clips;
+  buildProjects();
+  buildClips();
+  runBoot();
+}
+initApp();
